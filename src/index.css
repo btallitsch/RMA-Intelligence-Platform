@@ -1,0 +1,110 @@
+@import url('https://fonts.googleapis.com/css2?family=IBM+Plex+Mono:wght@400;500;600&family=IBM+Plex+Sans:wght@300;400;500;600;700&family=Orbitron:wght@700;900&display=swap');
+
+:root {
+  /* Surfaces */
+  --bg-base:        #080c14;
+  --bg-surface:     #0d1320;
+  --bg-elevated:    #141c2e;
+  --bg-hover:       #1a2440;
+  --bg-active:      #1e2a4a;
+
+  /* Borders */
+  --border:         #1f2d4a;
+  --border-strong:  #2a3d60;
+  --border-accent:  #f59e0b44;
+
+  /* Accent — Amber */
+  --amber:          #f59e0b;
+  --amber-dim:      #f59e0b88;
+  --amber-glow:     #f59e0b22;
+
+  /* Accent — Cyan */
+  --cyan:           #06b6d4;
+  --cyan-dim:       #06b6d488;
+  --cyan-glow:      #06b6d422;
+
+  /* Status */
+  --green:          #10b981;
+  --red:            #ef4444;
+  --purple:         #8b5cf6;
+  --orange:         #f97316;
+
+  /* Text */
+  --text-primary:   #e2e8f0;
+  --text-secondary: #94a3b8;
+  --text-muted:     #475569;
+  --text-accent:    #f59e0b;
+
+  /* Fonts */
+  --font-sans:      'IBM Plex Sans', sans-serif;
+  --font-mono:      'IBM Plex Mono', monospace;
+  --font-display:   'Orbitron', sans-serif;
+
+  /* Layout */
+  --sidebar-w:      240px;
+  --header-h:       56px;
+  --radius:         4px;
+  --radius-lg:      8px;
+}
+
+*, *::before, *::after { box-sizing: border-box; margin: 0; padding: 0; }
+
+html, body, #root {
+  height: 100%;
+  background: var(--bg-base);
+  color: var(--text-primary);
+  font-family: var(--font-sans);
+  font-size: 14px;
+  line-height: 1.5;
+  -webkit-font-smoothing: antialiased;
+}
+
+/* Scrollbar */
+::-webkit-scrollbar { width: 6px; height: 6px; }
+::-webkit-scrollbar-track { background: var(--bg-surface); }
+::-webkit-scrollbar-thumb { background: var(--border-strong); border-radius: 3px; }
+::-webkit-scrollbar-thumb:hover { background: var(--text-muted); }
+
+/* Typography */
+h1, h2, h3, h4 { font-weight: 600; line-height: 1.2; }
+
+/* Focus */
+*:focus-visible {
+  outline: 2px solid var(--amber);
+  outline-offset: 2px;
+}
+
+/* Utilities */
+.mono { font-family: var(--font-mono); }
+.text-muted { color: var(--text-secondary); }
+.text-accent { color: var(--amber); }
+.truncate { overflow: hidden; text-overflow: ellipsis; white-space: nowrap; }
+
+/* Scan-line overlay for the aesthetic */
+body::after {
+  content: '';
+  position: fixed;
+  inset: 0;
+  background: repeating-linear-gradient(
+    0deg,
+    transparent,
+    transparent 2px,
+    rgba(0, 0, 0, 0.04) 2px,
+    rgba(0, 0, 0, 0.04) 4px
+  );
+  pointer-events: none;
+  z-index: 9999;
+}
+
+/* Animations */
+@keyframes fadeIn {
+  from { opacity: 0; transform: translateY(6px); }
+  to   { opacity: 1; transform: translateY(0); }
+}
+
+@keyframes pulse-amber {
+  0%, 100% { box-shadow: 0 0 0 0 var(--amber-dim); }
+  50%       { box-shadow: 0 0 12px 4px var(--amber-glow); }
+}
+
+.animate-in { animation: fadeIn 0.25s ease forwards; }
