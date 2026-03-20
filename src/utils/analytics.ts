@@ -41,7 +41,11 @@ export function buildTrendData(cases: RMACase[]): TrendDataPoint[] {
   const buckets: Record<string, { total: number; lineProblem: number }> = {};
 
   cases.forEach((c) => {
-    const key = format(startOfMonth(parseISO(c.createdAt)), 'MMM yy');
+    if (!c.createdAt) return;
+    let parsed: Date;
+    try { parsed = parseISO(c.createdAt); if (isNaN(parsed.getTime())) return; }
+    catch { return; }
+    const key = format(startOfMonth(parsed), 'MMM yy');
     if (!buckets[key]) buckets[key] = { total: 0, lineProblem: 0 };
     buckets[key].total++;
     if (c.isLineProblem) buckets[key].lineProblem++;
@@ -68,10 +72,10 @@ export function computeDashboardStats(cases: RMACase[]): DashboardStats {
   let avgDays = 0;
   if (closed.length > 0) {
     const totalDays = closed.reduce((sum, c) => {
-      const days = Math.round(
-        (new Date(c.updatedAt).getTime() - new Date(c.createdAt).getTime()) /
-          (1000 * 60 * 60 * 24),
-      );
+      const created = new Date(c.createdAt).getTime();
+      const updated = new Date(c.updatedAt).getTime();
+      if (isNaN(created) || isNaN(updated)) return sum;
+      const days = Math.round((updated - created) / (1000 * 60 * 60 * 24));
       return sum + days;
     }, 0);
     avgDays = Math.round(totalDays / closed.length);
@@ -98,16 +102,35 @@ export function generateRMANumber(): string {
   return `RMA-${date}-${rand}`;
 }
 
-export function formatDate(iso: string): string {
-  return format(parseISO(iso), 'dd MMM yyyy');
+export function formatDate(iso: string | undefined | null): string {
+  if (!iso) return '—';
+  try {
+    const d = parseISO(iso);
+    if (isNaN(d.getTime())) return '—';
+    return format(d, 'dd MMM yyyy');
+  } catch {
+    return '—';
+  }
 }
 
-export function formatDateTime(iso: string): string {
-  return format(parseISO(iso), 'dd MMM yyyy HH:mm');
+export function formatDateTime(iso: string | undefined | null): string {
+  if (!iso) return '—';
+  try {
+    const d = parseISO(iso);
+    if (isNaN(d.getTime())) return '—';
+    return format(d, 'dd MMM yyyy HH:mm');
+  } catch {
+    return '—';
+  }
 }
 
-export function daysSince(iso: string): number {
-  return Math.round(
-    (Date.now() - new Date(iso).getTime()) / (1000 * 60 * 60 * 24),
-  );
+export function daysSince(iso: string | undefined | null): number {
+  if (!iso) return 0;
+  try {
+    const t = new Date(iso).getTime();
+    if (isNaN(t)) return 0;
+    return Math.round((Date.now() - t) / (1000 * 60 * 60 * 24));
+  } catch {
+    return 0;
+  }
 }

@@ -225,7 +225,7 @@ export function generateSeedData(): RMACase[] {
       id: case5Id,
       rmaNumber: 'RMA-250115-5502',
       createdAt: m(2),
-      updatedAt: m(2).replace('T', 'U'),
+      updatedAt: m(2),
       status: 'closed',
       productType: 'pressure_transducer',
       productModel: 'PressureSense 600',

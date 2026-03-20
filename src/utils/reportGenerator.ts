@@ -9,6 +9,15 @@ import {
   DISPOSITION_LABELS,
 } from './constants';
 
+function safeFormatDate(iso: string | undefined | null): string {
+  if (!iso) return '—';
+  try {
+    const d = parseISO(iso);
+    if (isNaN(d.getTime())) return '—';
+    return format(d, 'dd MMM yyyy');
+  } catch { return '—'; }
+}
+
 export function generateReport(rmaCase: RMACase): RMAReport {
   const now = new Date().toISOString();
   const sections = [];
@@ -37,9 +46,9 @@ export function generateReport(rmaCase: RMACase): RMAReport {
       `Model:             ${rmaCase.productModel}`,
       `Serial Number:     ${rmaCase.serialNumber}`,
       `Firmware:          ${rmaCase.firmwareVersion ?? '—'}`,
-      `Manufacture Date:  ${rmaCase.manufactureDate ? format(parseISO(rmaCase.manufactureDate), 'dd MMM yyyy') : '—'}`,
-      `Installation Date: ${rmaCase.installDate ? format(parseISO(rmaCase.installDate), 'dd MMM yyyy') : '—'}`,
-      `Failure Date:      ${rmaCase.failureDate ? format(parseISO(rmaCase.failureDate), 'dd MMM yyyy') : '—'}`,
+      `Manufacture Date:  ${safeFormatDate(rmaCase.manufactureDate)}`,
+      `Installation Date: ${safeFormatDate(rmaCase.installDate)}`,
+      `Failure Date:      ${safeFormatDate(rmaCase.failureDate)}`,
     ].join('\n'),
   });
 
